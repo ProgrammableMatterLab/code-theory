@@ -53,9 +53,10 @@ Inspired by and builds upon the following research:
 12. [https://users.cs.duke.edu/~reif/paper/urmi/magneticAssembly/magneticAssembly.pdf](https://users.cs.duke.edu/~reif/paper/urmi/magneticAssembly/magneticAssembly.pdf)
 
 13. [https://www.researchgate.net/publication/221344528_Three_Dimensional_Stochastic_Reconfiguration_of_Modular_Robots](https://www.researchgate.net/publication/221344528_Three_Dimensional_Stochastic_Reconfiguration_of_Modular_Robots)
+14. https://journals.aps.org/prx/pdf/10.1103/PhysRevX.14.021004
 
-14. [https://www.nature.com/articles/s41467-022-32892-y](https://www.nature.com/articles/s41467-022-32892-y)
+15. [https://www.nature.com/articles/s41467-022-32892-y](https://www.nature.com/articles/s41467-022-32892-y)
 
-15. [https://ijmttjournal.org/public/assets/volume-59/number-4/IJMTT-V59P532.pdf](https://ijmttjournal.org/public/assets/volume-59/number-4/IJMTT-V59P532.pdf)
+16. [https://ijmttjournal.org/public/assets/volume-59/number-4/IJMTT-V59P532.pdf](https://ijmttjournal.org/public/assets/volume-59/number-4/IJMTT-V59P532.pdf)
 
 
