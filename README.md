@@ -1,10 +1,3 @@
-<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
-
-# 
-
----
-
-# no, that is not a txt file, i meanjust a plain .txt file as your output so I can copy. I don't want themarkdown to be applied yet, onyl after I copy
 
 block is a library designed to study and visualize encodings and their interactions under rotation and translation.
 
