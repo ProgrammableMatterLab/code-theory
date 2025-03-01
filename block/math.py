@@ -68,3 +68,9 @@ def calculate_attraction(p1, p2, pols1, pols2, rad1, rad2):
   F = pols * intersects
   
   return F, torch.sum(F) / (len(p1))
+
+def rotate(tensor, theta, mode='d'):
+  if mode == 'd':
+    theta = math.pi * theta / 180
+  rot_mat = torch.tensor([[math.cos(theta), -1 * math.sin(theta)], [math.sin(theta), math.cos(theta)]])
+  return tensor @ rot_mat
