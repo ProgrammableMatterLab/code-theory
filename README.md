@@ -70,6 +70,8 @@ plot_faces(blocks: Union[Block, List[Block]], colors: List[str], zoom_factor: fl
 
 Visualizes one or more Blocks, displaying their points as circles with polarities indicated by 'N' or 'S' markers.
 
+![Visualizing Blocks](images/plot_faces.png)
+
 ## Usage Example
 
 blah blah blah
