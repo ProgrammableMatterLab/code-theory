@@ -66,6 +66,7 @@ def calculate_attraction(p1, p2, pols1, pols2, rad1, rad2):
   #dist = torch.where(torch.isinf(dist), dist, 1.0) # tmp, use distance to factor in attriactive force based on common surface area
   pols = pols1.reshape(-1, 1) @ pols2.reshape(1, -1)
   F = pols * intersects
+  F = F / (math.pi * rad1**2)
   
   return F, torch.sum(F) / (len(p1))
 

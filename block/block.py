@@ -2,23 +2,34 @@ import torch
 import math
 from .math import calculate_distances, circle_intersection_area, rotate
 from .utils import tensor_to_points
-from typing import Tuple
+from typing import Tuple, Optional, List
 
 class Block:
-    def __init__(self, tensor: torch.Tensor):
+    def __init__(
+        self, 
+        face_repr: Optional[torch.Tensor] = None, 
+         points_polarities: Optional[List[torch.Tensor]] = None
+    ):
         """
-        Initialize a Block object.
+        Initialize the Face class with either a face representation tensor or a list of points and polarities tensors.
 
         Args:
-            tensor (Tensor): A 2D tensor of shape (n, m) representing the block's structure.
-
-        Returns:
-            None
+            face_repr (Optional[torch.Tensor]): A tensor representing the face.
+            points_polarities (Optional[List[torch.Tensor]]): A list containing two tensors: points and polarities.
         """
-        self.tensor = tensor
-        self.polarities = torch.flatten(tensor)
-        self.points, self.radius = tensor_to_points(tensor)
-        self.numel = len(self.points)
+        if face_repr is not None:
+            self.tensor = face_repr
+            self.polarities = torch.flatten(face_repr)
+            self.points, self.radius = tensor_to_points(face_repr)
+            self.numel = len(self.points)
+        elif points_polarities is not None:
+            if len(points_polarities) != 2:
+                raise ValueError("points_polarities must contain exactly two tensors.")
+            self.points = points_polarities[0]
+            self.polarities = points_polarities[1]
+            self.numel = len(self.points)
+        else:
+            raise ValueError("Either 'face_repr' or 'points_polarities' must be provided.")
 
     @classmethod
     def from_block(cls, other):

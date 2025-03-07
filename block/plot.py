@@ -17,6 +17,7 @@ from .math import rotate, calculate_attraction, calculate_distances
 from matplotlib.patches import Circle
 from .block import Block
 from typing import List
+from scipy.linalg import hadamard
 
 def plot_faces(blocks: Block, colors: List[str], zoom_factor: float = 2, alpha: float = 0.5):
   
@@ -73,17 +74,25 @@ def plot_attraction_vs_rotation_for_multiple_N(N_values, num_angles=260):
         had = hadamard(N)
         pols1 = torch.tensor(had.flatten(), dtype=torch.float32)
         pols2 = -pols1
+
+        had = torch.from_numpy(hadamard(N))
+        block = Block(had)
+        invb = Block.from_block(block)
+        invb.polarities = invb.polarities * -1
+
+        # pols1, p1, r1 = block.polarities, block.points, block.radius
+        # pols2, p2, r2 = invb.polarities, invb.points, invb.radius
         
-        # Transform into sets of points
-        t1 = torch.tensor(had, dtype=torch.float32)
-        t2 = torch.tensor(had, dtype=torch.float32)
-        p1, r1 = tensor_to_points(t1)
-        p2, r2 = tensor_to_points(t2)
+        # # Transform into sets of points
+        # t1 = torch.tensor(had, dtype=torch.float32)
+        # t2 = torch.tensor(had, dtype=torch.float32)
+        # p1, r1 = tensor_to_points(t1)
+        # p2, r2 = tensor_to_points(t2)
         
         results = []
         for angle in angles:
-            rotated = rotate(p2, angle)
-            _, res = calculate_attraction(p1, rotated, pols1, pols2, r1, r2)
+            invb.rotate(angle)
+            _, res = Block.calculate_attraction(block, invb)
             results.append(res.item())
         
         # Convert angles and results to numpy arrays
