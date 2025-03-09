@@ -9,12 +9,8 @@ block is a library designed to study and visualize encodings and their interacti
 
 ## Installation
 
-To install MTProject:
-
-1. lorem
-2. epsum
-3. lorem...
-4. do this still
+To install blocks:
+1. not done yet...
 
 ## API Reference
 
