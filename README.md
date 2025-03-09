@@ -73,10 +73,10 @@ Visualizes one or more Blocks, displaying their points as circles with polaritie
 blah blah blah
 
 ### TODO
-- [ ]For plots showing overlapping N & S pixels: show a distinct color for attraction, another color for repulsion
-- [ ]Don't normalize - we care about overlapping areas to compare different resolutions
-- [ ]Animation of the rotating surfaces alongside a graph
-- [ ]Earnshaw's theorem
+- [ ] For plots showing overlapping N & S pixels: show a distinct color for attraction, another color for repulsion
+- [ ] Don't normalize - we care about overlapping areas to compare different resolutions
+- [ ] Animation of the rotating surfaces alongside a graph
+- [ ] Earnshaw's theorem
 - [ ] non-linear programming for designing N/S placement to shape a potential well
 
 ## References
