@@ -8,28 +8,30 @@ class Block:
     def __init__(
         self, 
         face_repr: Optional[torch.Tensor] = None, 
-         points_polarities: Optional[List[torch.Tensor]] = None
+        blob: Optional[Tuple[torch.Tensor, torch.Tensor, float]] = None
     ):
         """
         Initialize the Face class with either a face representation tensor or a list of points and polarities tensors.
 
         Args:
             face_repr (Optional[torch.Tensor]): A tensor representing the face.
-            points_polarities (Optional[List[torch.Tensor]]): A list containing two tensors: points and polarities.
+            blob (Optional[Tuple[torch.Tensor, torch.Tensor, float]]): A tuple with the (points, polarities, radius)
         """
-        if face_repr is not None:
-            self.tensor = face_repr
+        if face_repr and blob:
+            raise ValueError("choose only one of 'face_repr' or 'blob' to init")
+        elif face_repr:
             self.polarities = torch.flatten(face_repr)
             self.points, self.radius = tensor_to_points(face_repr)
             self.numel = len(self.points)
-        elif points_polarities is not None:
-            if len(points_polarities) != 2:
+        elif blob:
+            if len(blob) != 3:
                 raise ValueError("points_polarities must contain exactly two tensors.")
-            self.points = points_polarities[0]
-            self.polarities = points_polarities[1]
+            self.points = blob[0]
+            self.polarities = blob[1]
+            self.radius = blob[2]
             self.numel = len(self.points)
         else:
-            raise ValueError("Either 'face_repr' or 'points_polarities' must be provided.")
+            raise ValueError("Either 'face_repr' or 'blob' must be provided.")
 
     @classmethod
     def from_block(cls, other):
@@ -46,12 +48,9 @@ class Block:
         return F, torch.sum(F) / block1.numel
 
     def rotated(self, theta, mode='d'):
-        assert theta >= 0
         points = rotate(self.points, theta, mode)
-        b = Block(self.tensor)
-        b.points = points
+        b = Block(blob=(points, self.polarities, self.radius))
         return b
 
     def rotate(self, theta, mode='d'):
-        assert theta >= 0
         self.points = rotate(self.points, theta, mode)
