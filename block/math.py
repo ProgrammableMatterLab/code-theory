@@ -3,20 +3,18 @@ import math
 from block import Block
 from typing import Tuple
 
-def _intersection_area(points1: torch.Tensor, points2: torch.Tensor, radii1: torch.Tensor, radii2: torch.Tensor) -> torch.Tensor:
+def _intersection_area(points1: torch.Tensor, points2: torch.Tensor, radii1: torch.Tensor, radii2: torch.Tensor, power=2) -> torch.Tensor:
     """
     Calculate the intersection between two sets of circles with radii r1 and r2
-
     Args:
-    points1 (torch.Tensor): Centers of the first set of circles (N, 2)
-    points2 (torch.Tensor): Centers of the second set of circles (M, 2)
-    radii1 (torch.Tensor): Radii of the first set of circles (N,)
-    radii2 (torch.Tensor): Radii of the second set of circles (M,)
-
+      points1 (torch.Tensor): Centers of the first set of circles (N, 2)
+      points2 (torch.Tensor): Centers of the second set of circles (M, 2)
+      radii1 (torch.Tensor): Radii of the first set of circles (N,)
+      radii2 (torch.Tensor): Radii of the second set of circles (M,)
     Returns:
-    torch.Tensor: Tensor of intersection areas (N, M)
+      torch.Tensor: Tensor of intersection areas (N, M)
     """
-    dists = _ppower_distances(points1, points2, power=2) ** 0.5
+    dists = _ppower_distances(points1, points2, power=power) ** (1 / power)
     r1_expanded = radii1.unsqueeze(1)
     r2_expanded = radii2.unsqueeze(1)
 
@@ -40,15 +38,15 @@ def _intersection_area(points1: torch.Tensor, points2: torch.Tensor, radii1: tor
                                                 area1 + area2 - area_triangle))
     return intersection_area
 
-# Calculate distances
-def _ppower_distances(p1: torch.Tensor, p2: torch.Tensor, power: float = 2):
+def _ppower_distances(p1: torch.Tensor, p2: torch.Tensor, power: float = 2) -> torch.Tensor:
   '''
   calculates ||p - p'||_power ^ power for every p in p1 for every p in p2
-
   Args:
-  p1 (torch.Tensor): tensor of points (N, 3)
-  p2 (torch.Tensor): tensor of points (M, 3)
-  power (float): power
+    p1 (torch.Tensor): tensor of points (N, 3)
+    p2 (torch.Tensor): tensor of points (M, 3)
+    power (float): power
+  Returns:
+    torch.Tensor: distances
   '''
   # Reshape p1 to (n1, 1, 2) and p2 to (1, n2, 2)
   p1_expanded = p1.unsqueeze(1)
@@ -62,11 +60,10 @@ def calculate_attraction(block1: Block, block2: Block) -> Tuple[torch.Tensor, fl
   '''
   calculates the attraction between two sets of points p1 and p2
   Args:
-  block1 (Block)
-  block2 (Block)
-
+    block1 (Block)
+    block2 (Block)
   Returns:
-  a tuple of the attraction for each point and the sum of the attractive forces
+    Tuple: a tuple of the attraction for each point and the sum of the attractive forces
   '''
   points1, polarities1, radii1 = block1.as_tuple()
   points2, polarities2, radii2 = block2.as_tuple()
@@ -79,11 +76,26 @@ def rotate(points: torch.Tensor, theta, mode='d'):
   '''
   returns the points rotated by theta
   Args:
-  points (torch.Tensor): points to be rotated
-  theta (float): angle
-  mode (None or 'd'): if 'd' then mode is degrees otherwise radians
+    points (torch.Tensor): points to be rotated
+    theta (float): angle
+    mode (None or 'd'): if 'd' then mode is degrees otherwise radians
+  Returns:
+    torch.Tensor: a new tensor of the rotated points
   '''
   if mode == 'd':
     theta = math.pi * theta / 180
   rot_mat = torch.tensor([[math.cos(theta), -1 * math.sin(theta)], [math.sin(theta), math.cos(theta)]])
   return points @ rot_mat
+
+
+def is_overlapping(points: torch.Tensor, radii: torch.Tensor) -> bool:
+  '''
+  checks if a set of points is overlapping or note
+  Args:
+    points (torch.Tensor): set of points
+    radii (torch.Tensor): radius for each circle centered at p in points
+  Returns:
+    bool: true if no circles overlap, otherwise false
+  '''
+  area = _intersection_area(points, points, radii, radii)
+  return True if area <= math.pi * torch.sum(radii**2) else False
