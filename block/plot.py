@@ -80,10 +80,6 @@ def plot_attraction_vs_rotation_for_multiple_N(N_values, num_angles=260):
         # p1, r1 = tensor_to_points(t1)
         # p2, r2 = tensor_to_points(t2)
 
-
-
-     
-
         plot_faces(
           tensors=[p1, p2],
           pols=[pols1, pols2],

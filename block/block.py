@@ -37,3 +37,6 @@ class Block:
 
     def rotate(self, theta, mode='d') -> None:
         self.points = rotate(self.points, theta, mode)
+    
+    def __str__(self):
+        return '{' + f'points:\n {self.points},\n polarities:\n {self.polarities},\n radii:\n {self.radii},\n numel: {self.numel}' + '}'

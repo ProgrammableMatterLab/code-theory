@@ -14,9 +14,9 @@ def _intersection_area(points1: torch.Tensor, points2: torch.Tensor, radii1: tor
     Returns:
       torch.Tensor: Tensor of intersection areas (N, M)
     """
-    dists = _ppower_distances(points1, points2, power=power) ** (1 / power)
+    dists = _pnorm_distances(points1, points2, power=power)
     r1_expanded = radii1.unsqueeze(1)
-    r2_expanded = radii2.unsqueeze(1)
+    r2_expanded = radii2.unsqueeze(0)
 
     # Check if circles intersect
     no_intersection = dists >= r1_expanded + r2_expanded
@@ -38,7 +38,7 @@ def _intersection_area(points1: torch.Tensor, points2: torch.Tensor, radii1: tor
                                                 area1 + area2 - area_triangle))
     return intersection_area
 
-def _ppower_distances(p1: torch.Tensor, p2: torch.Tensor, power: float = 2) -> torch.Tensor:
+def _pnorm_distances(p1: torch.Tensor, p2: torch.Tensor, power: float = 2) -> torch.Tensor:
   '''
   calculates ||p - p'||_power ^ power for every p in p1 for every p in p2
   Args:
@@ -48,12 +48,12 @@ def _ppower_distances(p1: torch.Tensor, p2: torch.Tensor, power: float = 2) -> t
   Returns:
     torch.Tensor: distances
   '''
+  assert power > 0
   # Reshape p1 to (n1, 1, 2) and p2 to (1, n2, 2)
   p1_expanded = p1.unsqueeze(1)
   p2_expanded = p2.unsqueeze(0)
-
-  # Calculate squared differences
-  return ((p1_expanded - p2_expanded) ** power).sum(dim=-1)
+  # Calculate p norm of difference
+  return ((p1_expanded - p2_expanded) ** power).sum(dim=-1) ** (1 / power)
 
 
 def calculate_attraction(block1: Block, block2: Block) -> Tuple[torch.Tensor, float]:
@@ -72,7 +72,7 @@ def calculate_attraction(block1: Block, block2: Block) -> Tuple[torch.Tensor, fl
   F = pols * intersects
   return F, torch.sum(F)
 
-def rotate(points: torch.Tensor, theta, mode='d'):
+def rotate(points: torch.Tensor, theta, mode='d') -> torch.Tensor:
   '''
   returns the points rotated by theta
   Args:
@@ -85,8 +85,29 @@ def rotate(points: torch.Tensor, theta, mode='d'):
   if mode == 'd':
     theta = math.pi * theta / 180
   rot_mat = torch.tensor([[math.cos(theta), -1 * math.sin(theta)], [math.sin(theta), math.cos(theta)]])
-  return points @ rot_mat
+  return transform(points, rot_mat)
 
+def transform(points: torch.Tensor, A: torch.Tensor) -> torch.Tensor:
+  '''
+  applies a linear transformation to points
+  Args:
+  points (torch.Tensor): points (N,2)
+  A (torch.Tensor): transformation matrix (2, 2)
+  Returns:
+  torch.Tensor: transformed points
+  '''
+  return points @ A
+
+def translate(points: torch.Tensor, A: torch.Tensor) -> torch.Tensor:
+  '''
+  translates points
+  Args:
+  points (torch.Tensor): points (N,2)
+  A (torch.Tensor): translation matrix (2,)
+  Returns:
+  torch.Tensor: translated points
+  '''
+  return points + A
 
 def is_overlapping(points: torch.Tensor, radii: torch.Tensor) -> bool:
   '''
