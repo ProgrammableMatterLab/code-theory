@@ -1,8 +1,9 @@
 import torch
 import math
-from .math import calculate_distances, circle_intersection_area, rotate
+from .math import calculate_distances, circle_intersection_area, rotate, calculate_attraction
 from .utils import tensor_to_points
 from typing import Tuple, Optional, List
+from block import Block
 
 class Block:
     def __init__(
@@ -21,24 +22,18 @@ class Block:
         self.radii = radii
         self.numel = len(self.points)
 
-    @classmethod
-    def from_block(cls, other):
-        new_block = cls(other.points.clone(), other.polarities.clone(), other.radii.clone())
-        return new_block
+    def clone(self) -> Block:
+        return Block(self.points.clone(), self.polarities.clone(), self.radii.clone())
 
-    @staticmethod
-    def calculate_attraction(block1, block2):
-        # Implementation of calculate_attraction function
-        dist = calculate_distances(block1.points, block2.points)
-        intersects = circle_intersection_area(block1.radii, block2.radii, dist)
-        pols = block1.polarities.reshape(-1, 1) @ block2.polarities.reshape(1, -1)
-        F = pols * intersects
-        return F, torch.sum(F) / block1.numel
+    def calculate_attraction(self, other: Block) -> Tuple[torch.Tensor, float]:
+        return calculate_attraction(self, other)
 
-    def rotated(self, theta, mode='d'):
+    def as_tuple(self) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        return (self.points, self.polarities, self.radii)
+
+    def rotated(self, theta, mode='d') -> Block:
         points = rotate(self.points, theta, mode)
-        b = Block(blob=(points, self.polarities, self.radius))
-        return b
+        return Block(blob=(points, self.polarities, self.radius))
 
-    def rotate(self, theta, mode='d'):
+    def rotate(self, theta, mode='d') -> None:
         self.points = rotate(self.points, theta, mode)

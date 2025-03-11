@@ -5,7 +5,7 @@ import math
 import torch
 from .math import is_overlapping
 import numpy as np
-from typing import Callable, Tuple
+from typing import Callable, Tuple, Optional
 
 def gen_had_block(n: int) -> Block:
     '''
@@ -22,11 +22,14 @@ def gen_had_block(n: int) -> Block:
     return Block(points, torch.flatten(had), r)
 
 
-def gen_rand_block(n: int, func: Callable[[], float], bounds = (-1, 1, -1, 1), polarities = None) -> Block:
+def gen_rand_block(n: int, func: Callable[[], float], bounds: Tuple[float, float, float, float]  = (-1, 1, -1, 1), polarities: Optional[torch.Tensor] = None) -> Block:
     '''
     generate a block based on a nxn hadamard matrix to describe the pols
     Args:
-        n: side length of the hadamard matrix
+        n (int): number of points to generate
+        func (Callable[[], float]): function to generate a radius for a point
+        bounds (Tuple[float, float, float, float]): bounds describing where the points can be placed
+        polarities (Optional[torch.Tensor]): polarities for the points
     Returns:
         a Block object
     '''
@@ -38,7 +41,7 @@ def gen_rand_block(n: int, func: Callable[[], float], bounds = (-1, 1, -1, 1), p
     return Block(points, polarities, radii)
 
     
-def _generate_non_overlapping_points(num_points: int, func: Callable[[], float], bl: Tuple[float, float], tr: Tuple[float, float]) -> Tuple[torch.Tensor, torch.Tensor]:
+def _generate_non_overlapping_points(num_points: int, func: Callable[[], float], bounds: Tuple[float, float, float, float]) -> Tuple[torch.Tensor, torch.Tensor]:
     """
     Generate non-intersecting points.
 
@@ -53,7 +56,7 @@ def _generate_non_overlapping_points(num_points: int, func: Callable[[], float],
     points = []
     radii = []
     while len(points) < num_points:
-        new_point = torch.tensor([np.random.uniform(bl[0], tr[0]), np.random.uniform(bl[1], tr[1])])
+        new_point = torch.tensor([np.random.uniform(bounds[0], bounds[1]), np.random.uniform(bounds[2], bounds[3])])
         radius =  func()
         tmp_points = torch.stack(points + [new_point])
         tmp_radii = torch.stack(radii + [radius])
