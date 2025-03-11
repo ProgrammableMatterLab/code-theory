@@ -1,5 +1,6 @@
 from block import Block
 from scipy.linalg import hadamard
+from .utils import tensor_to_points
 import math
 import torch
 from .math import is_overlapping
@@ -16,7 +17,10 @@ def gen_had_block(n: int) -> Block:
     '''
     if n <= 0:
         raise Exception(f'n must be a positive number and a power of 2: {n} is invalid!')
-    return Block(torch.from_numpy(hadamard(n)))
+    had = torch.from_numpy(hadamard(n))
+    points, r = tensor_to_points(had)
+    return Block(points, torch.flatten(had), r)
+
 
 def gen_rand_block(n: int, func: Callable[[], float], bounds = (-1, 1, -1, 1), polarities = None) -> Block:
     '''

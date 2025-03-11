@@ -1,20 +1,62 @@
 
 block is a library designed to study and visualize encodings and their interactions under rotation and translation.
 
-## Key Components
+# Key Components
 
 1. **Block Class**: Encapsulates tensor data with polarity information for calculating attraction between blocks.
 2. **Plotting Functions**: Include `plot_faces` for visualizing tensor faces with polarities.
 3. **Utility Functions**: Convert tensors to points using `tensor_to_points`.
 
-## Installation
+# Installation
+To install the block library, follow these steps:
 
-To install blocks:
-1. not done yet...
+## Pre-requisites:
+- Python 3.8 or higher
+- pip
+## Installation via GitHub:
+1. Clone the repository:
+```bash
+git clone https://github.com/your-username/block.git
+```
+2. Navigate into the cloned repository:
+```bash
+cd block
+```
+3. Install the package in editable mode:
+```bash
+pip install -e .
+```
+## Requirements:
+Ensure you have the necessary dependencies installed. You can install them using:
+```bash
+pip install torch scipy numpy matplotlib
+```
+Or, if you prefer to manage dependencies via a requirements.txt file, you can create one with the following content:
+```text
+torch
+scipy
+numpy
+matplotlib
+```
+Then, install the dependencies using:
+```bash
+pip install -r requirements.txt
+```
+## Optional: Conda Environment Setup
+For those who prefer using Conda, you can create a dedicated environment:
+```bash
+conda create --name block-env python=3.8
+conda activate block-env
+pip install git+https://github.com/your-username/block.git
+```
+Make sure to replace your-username with your actual GitHub username and adjust the repository URL accordingly.
+### Notes
+- Ensure you have Git installed if you choose to clone the repository.
+- If you encounter issues with dependencies, consider using a virtual environment to manage them more effectively.
 
-## API Reference
+# API Reference
 
-### Block Class
+## Block Class
 
 The `Block` class is the core component of the library, representing a block structure with associated tensor data and polarities.
 
@@ -58,7 +100,7 @@ rotate(self, theta: float, mode: str = 'd') -> None
 
 Rotates the points of the current Block by the given angle theta in-place.
 
-### Plotting Functions
+## Plotting Functions
 
 ```python
 plot_faces(blocks: Union[Block, List[Block]], colors: List[str], zoom_factor: float = 2, alpha: float = 0.5) -> None
@@ -71,6 +113,9 @@ Visualizes one or more Blocks, displaying their points as circles with polaritie
 ## Usage Example
 
 blah blah blah
+
+## Testing
+    $ python -m unittest discover -s block/tests
 
 ### TODO
 - [ ] For plots showing overlapping N & S pixels: show a distinct color for attraction, another color for repulsion
