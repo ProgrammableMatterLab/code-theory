@@ -2,7 +2,9 @@ from block import Block
 from scipy.linalg import hadamard
 import math
 import torch
+from .math import is_overlapping
 import numpy as np
+from typing import Callable, Tuple
 
 def gen_had_block(n: int) -> Block:
     '''
@@ -16,7 +18,7 @@ def gen_had_block(n: int) -> Block:
         raise Exception(f'n must be a positive number and a power of 2: {n} is invalid!')
     return Block(torch.from_numpy(hadamard(n)))
 
-def gen_rand_block(n: int, radius: float, bounds = (-1, 1, -1, 1), polarities = None) -> Block:
+def gen_rand_block(n: int, func: Callable[[], float], bounds = (-1, 1, -1, 1), polarities = None) -> Block:
     '''
     generate a block based on a nxn hadamard matrix to describe the pols
     Args:
@@ -26,39 +28,35 @@ def gen_rand_block(n: int, radius: float, bounds = (-1, 1, -1, 1), polarities = 
     '''
     if n <= 0:
         raise Exception(f'n must be a positive number: {n} is invalid!')
-    points = generate_non_intersecting_points(n, radius, bounds)
+    points, radii = _generate_non_overlapping_points(n, func, bounds)
     if not polarities:
         polarities = torch.randint(0, 2, (n, ))  
-    return Block(blob=(points, polarities, radius))
+    return Block(points, polarities, radii)
 
     
-def generate_non_intersecting_points(num_points, radius, bounds):
+def _generate_non_overlapping_points(num_points: int, func: Callable[[], float], bl: Tuple[float, float], tr: Tuple[float, float]) -> Tuple[torch.Tensor, torch.Tensor]:
     """
-    Generate random points within specified bounds that do not intersect with each other.
+    Generate non-intersecting points.
 
-    Parameters:
-    - num_points: Number of points to generate.
-    - radius: Radius of each point.
-    - bounds: Tuple of (min_x, max_x, min_y, max_y) defining the area where points can be generated.
+    Args:
+    num_points (int): Number of points to generate.
+    func (callable): A function that takes one float argument and returns a float.
+    bounds (tuple): Bounds for generating points.
 
     Returns:
-    - points: A tensor of shape (num_points, 2) containing the generated points.
+    Tuple: points, radii
     """
     points = []
+    radii = []
     while len(points) < num_points:
-        new_point = torch.tensor([np.random.uniform(bounds[0], bounds[1]), np.random.uniform(bounds[2], bounds[3])])
-
+        new_point = torch.tensor([np.random.uniform(bl[0], tr[0]), np.random.uniform(bl[1], tr[1])])
+        radius =  func()
+        tmp_points = torch.stack(points + [new_point])
+        tmp_radii = torch.stack(radii + [radius])
         # Check if the new point intersects with any existing points
-        intersects = False
-        for point in points:
-            distance = torch.norm(new_point - point)
-            if distance < 2 * radius:  # Check if distance is less than twice the radius
-                intersects = True
-                break
-
-        if not intersects:
+        if not is_overlapping(tmp_points, tmp_radii):
             points.append(new_point)
-
-    return torch.stack(points)
+            radii.append(radius)
+    return torch.stack(points), torch.stack(radii)
 
     
