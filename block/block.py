@@ -1,9 +1,6 @@
 import torch
-import math
-from .math import calculate_distances, circle_intersection_area, rotate, calculate_attraction
-from .utils import tensor_to_points
+from .math import intersection_area, rotate_points, transform, translate
 from typing import Tuple, Optional, List
-from block import Block
 
 class Block:
     def __init__(
@@ -22,21 +19,47 @@ class Block:
         self.radii = radii
         self.numel = len(self.points)
 
-    def clone(self) -> Block:
+    def mate(self) -> 'Block':
+        return Block(self.points.clone(), -1 * self.polarities.clone(), self.radii.clone())
+
+    def clone(self) -> 'Block':
         return Block(self.points.clone(), self.polarities.clone(), self.radii.clone())
 
-    def calculate_attraction(self, other: Block) -> Tuple[torch.Tensor, float]:
+    def calculate_attraction(self, other: 'Block') -> Tuple[torch.Tensor, float]:
         return calculate_attraction(self, other)
 
     def as_tuple(self) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         return (self.points, self.polarities, self.radii)
 
-    def rotated(self, theta, mode='d') -> Block:
-        points = rotate(self.points, theta, mode)
-        return Block(blob=(points, self.polarities, self.radius))
-
     def rotate(self, theta, mode='d') -> None:
-        self.points = rotate(self.points, theta, mode)
+        self.points = rotate_points(self.points, theta, mode)
+    
+    def transform(self, A: torch.Tensor) -> None:
+        self.points = transform(self.points, A)
+    
+    def translate(self, A: torch.Tensor) -> None:
+        self.points = translate(self.points, A)
     
     def __str__(self):
         return '{' + f'points:\n {self.points},\n polarities:\n {self.polarities},\n radii:\n {self.radii},\n numel: {self.numel}' + '}'
+    
+
+def rotate(self, theta, mode='d') -> 'Block':
+  points = rotate_points(self.points, theta, mode)
+  return Block(blob=(points, self.polarities, self.radius))
+
+def calculate_attraction(block1: 'Block', block2: 'Block') -> Tuple[torch.Tensor, float]:
+  '''
+  calculates the attraction between two sets of points p1 and p2
+  Args:
+    block1 (Block)
+    block2 (Block)
+  Returns:
+    Tuple: a tuple of the attraction for each point and the sum of the attractive forces
+  '''
+  points1, polarities1, radii1 = block1.as_tuple()
+  points2, polarities2, radii2 = block2.as_tuple()
+  intersects = intersection_area(points1, points2, radii1, radii2)
+  pols = polarities1.reshape(-1, 1) @ polarities2.reshape(1, -1)
+  F = pols * intersects
+  return F, torch.sum(F)

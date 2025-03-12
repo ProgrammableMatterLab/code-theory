@@ -1,52 +1,37 @@
 import torch
 import numpy as np
 from typing import List
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from torch.optim import Optimizer
 import matplotlib.pyplot as plt
-import numpy as np
-import math
-import torch
-import numpy as np
-import matplotlib.pyplot as plt
-from .utils import tensor_to_points
-import matplotlib.pyplot as plt
-from .math import rotate, calculate_attraction, calculate_distances
-from matplotlib.patches import Circle
+from .math import rotate_points
+from matplotlib.patches import Circle, Polygon, Rectangle
 from .block import Block
-from typing import List
 from scipy.linalg import hadamard
 
-def plot_faces(blocks: Block, colors: List[str], zoom_factor: float = 2, alpha: float = 0.5):
+def plot_faces(blocks: list, zoom_factor: float = 2, alpha: float = 0.3):
   
-  if not isinstance(blocks, list):
-     blocks = [blocks]
-  tensors = []
-  pols = []
-  radii = []
+  b_points = []
+  b_polarities = []
+  b_radii = []
   for block in blocks:
-    tensors.append(block.points)
-    pols.append(block.polarities)
-    radii.append(block.radius)  
+    b_points.append(block.points)
+    b_polarities.append(block.polarities)
+    b_radii.append(block.radii) 
+
   fig, ax = plt.subplots(figsize=(8, 8))
-
-  for tensor, pol, radius, color in zip(tensors, pols, radii, colors):
-    points = tensor.clone().detach().numpy()
-    values = pol
-    for point, value in zip(points, values):
-        circle = Circle((point[0], point[1]), radius, facecolor=color, edgecolor='none', alpha=alpha)
+  for points, polarities, radii in zip(b_points, b_polarities, b_radii):
+    for point, polarity, radius in zip(points, polarities, radii):
+        color = 'r' if polarity > 0 else 'b'
+        circle = Circle((point[0], point[1]), radius, facecolor=color, edgecolor='black', alpha=alpha)
         ax.add_artist(circle)
-        marker = 'N' if value > 0 else 'S'
+        marker = 'N' if polarity > 0 else 'S'
         ax.text(point[0], point[1], marker, ha='center', va='center', color='black', fontweight='bold')
-
+       
   ax.set_xlim(-zoom_factor, zoom_factor)
   ax.set_ylim(-zoom_factor, zoom_factor)
   ax.set_aspect('equal', adjustable='box')
   ax.set_xlabel('X')
   ax.set_ylabel('Y')
-  ax.set_title('Circle Plot of Multiple Tensors')
+  ax.set_title('Plot of Blocks')
   ax.grid(True)
   plt.show()
 
@@ -125,9 +110,6 @@ def plot_attraction_vs_rotation_for_multiple_N(N_values, num_angles=260):
 
         plt.show()
 
-    
-
-
 # def plot_attraction_vs_rotation_for_multiple_N(N_values, num_angles=260):
 #     """
 #     Plot attraction vs rotation for multiple N x N Hadamard matrices using bar graphs.
@@ -194,3 +176,5 @@ def plot_attraction_vs_rotation_for_multiple_N(N_values, num_angles=260):
 #         ax.set_ylim(-1, 1)
 
 #         plt.show()
+
+

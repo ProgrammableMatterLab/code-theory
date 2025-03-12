@@ -1,9 +1,7 @@
 import torch
 import math
-from block import Block
-from typing import Tuple
 
-def _intersection_area(points1: torch.Tensor, points2: torch.Tensor, radii1: torch.Tensor, radii2: torch.Tensor, power=2) -> torch.Tensor:
+def intersection_area(points1: torch.Tensor, points2: torch.Tensor, radii1: torch.Tensor, radii2: torch.Tensor, power=2) -> torch.Tensor:
     """
     Calculate the intersection between two sets of circles with radii r1 and r2
     Args:
@@ -40,7 +38,7 @@ def _intersection_area(points1: torch.Tensor, points2: torch.Tensor, radii1: tor
 
 def _pnorm_distances(p1: torch.Tensor, p2: torch.Tensor, power: float = 2) -> torch.Tensor:
   '''
-  calculates ||p - p'||_power ^ power for every p in p1 for every p in p2
+  calculates ||p - p'||_power for every p in p1 for every p in p2
   Args:
     p1 (torch.Tensor): tensor of points (N, 3)
     p2 (torch.Tensor): tensor of points (M, 3)
@@ -55,24 +53,7 @@ def _pnorm_distances(p1: torch.Tensor, p2: torch.Tensor, power: float = 2) -> to
   # Calculate p norm of difference
   return ((p1_expanded - p2_expanded) ** power).sum(dim=-1) ** (1 / power)
 
-
-def calculate_attraction(block1: Block, block2: Block) -> Tuple[torch.Tensor, float]:
-  '''
-  calculates the attraction between two sets of points p1 and p2
-  Args:
-    block1 (Block)
-    block2 (Block)
-  Returns:
-    Tuple: a tuple of the attraction for each point and the sum of the attractive forces
-  '''
-  points1, polarities1, radii1 = block1.as_tuple()
-  points2, polarities2, radii2 = block2.as_tuple()
-  intersects = _intersection_area(points1, points2, radii1, radii2)
-  pols = polarities1.reshape(-1, 1) @ polarities2.reshape(1, -1)
-  F = pols * intersects
-  return F, torch.sum(F)
-
-def rotate(points: torch.Tensor, theta, mode='d') -> torch.Tensor:
+def rotate_points(points: torch.Tensor, theta, mode='d') -> torch.Tensor:
   '''
   returns the points rotated by theta
   Args:
@@ -118,5 +99,5 @@ def is_overlapping(points: torch.Tensor, radii: torch.Tensor) -> bool:
   Returns:
     bool: true if no circles overlap, otherwise false
   '''
-  area = _intersection_area(points, points, radii, radii)
-  return True if area <= math.pi * torch.sum(radii**2) else False
+  area = intersection_area(points, points, radii, radii)
+  return True if torch.sum(area) < math.pi * torch.sum(radii**2) else False

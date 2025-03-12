@@ -1,11 +1,11 @@
-from block import Block
+from .block import Block
 from scipy.linalg import hadamard
 from .utils import had_to_points
-import math
 import torch
-from .math import is_overlapping
+from .math import is_overlapping, intersection_area
 import numpy as np
 from typing import Callable, Tuple, Optional
+import random
 
 def gen_had_block(n: int) -> Block:
     '''
@@ -19,7 +19,7 @@ def gen_had_block(n: int) -> Block:
         raise Exception(f'n must be a positive number and a power of 2: {n} is invalid!')
     had = torch.from_numpy(hadamard(n))
     points, r = had_to_points(had)
-    return Block(points, torch.flatten(had), r)
+    return Block(points, torch.flatten(had), torch.tensor([r] * len(points)))
 
 
 def gen_rand_block(n: int, func: Callable[[], float], bounds: Tuple[float, float, float, float]  = (-1, 1, -1, 1), polarities: Optional[torch.Tensor] = None) -> Block:
@@ -56,14 +56,11 @@ def _generate_non_overlapping_points(num_points: int, func: Callable[[], float],
     points = []
     radii = []
     while len(points) < num_points:
-        new_point = torch.tensor([np.random.uniform(bounds[0], bounds[1]), np.random.uniform(bounds[2], bounds[3])])
-        radius =  func()
-        tmp_points = torch.stack(points + [new_point])
-        tmp_radii = torch.stack(radii + [radius])
+        new_point = [random.uniform(bounds[0], bounds[1]), random.uniform(bounds[2], bounds[3])]
+        radius =  [func()]
         # Check if the new point intersects with any existing points
-        if not is_overlapping(tmp_points, tmp_radii):
+        if torch.sum(intersection_area(torch.tensor(points), torch.tensor(new_point), torch.tensor(radii), torch.tensor(radius))) == 0:
             points.append(new_point)
             radii.append(radius)
-    return torch.stack(points), torch.stack(radii)
-
+    return torch.tensor(points), torch.tensor(radii)
     
