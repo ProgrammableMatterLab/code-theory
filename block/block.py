@@ -44,9 +44,11 @@ class Block:
         return '{' + f'points:\n {self.points},\n polarities:\n {self.polarities},\n radii:\n {self.radii},\n numel: {self.numel}' + '}'
     
 
-def rotate(self, theta, mode='d') -> 'Block':
-  points = rotate_points(self.points, theta, mode)
-  return Block(blob=(points, self.polarities, self.radius))
+def rotate(block: 'Block', theta, mode='d') -> 'Block':
+  points = rotate_points(block.points, theta, mode)
+  new_block = block.clone()
+  new_block.points = points
+  return new_block
 
 def calculate_attraction(block1: 'Block', block2: 'Block') -> Tuple[torch.Tensor, float]:
   '''
