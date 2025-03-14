@@ -12,7 +12,7 @@ To install the block library, follow these steps:
 
 ## Pre-requisites:
 - Python 3.8 or higher
-- pip
+- pip3
 ## Installation via GitHub:
 1. Clone the repository:
 ```bash
