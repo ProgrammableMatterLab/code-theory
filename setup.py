@@ -22,6 +22,10 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.8',
-    # Add dependencies if needed
-    # install_requires=['dependency1', 'dependency2'],
+    install_requires=[
+        'torch',
+        'scipy',
+        'numpy',
+        'matplotlib'
+    ],
 )

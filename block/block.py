@@ -41,7 +41,7 @@ class Block:
         self.points = translate_points(self.points, A)
     
     def __str__(self):
-        return '{' + f'points:\n {self.points},\n polarities:\n {self.polarities},\n radii:\n {self.radii},\n numel: {self.numel}' + '}'
+        return f'points:\n {self.points},\n polarities:\n {self.polarities},\n radii:\n {self.radii},\n numel:\n {self.numel}'
     
 
 def rotate(block: 'Block', theta, mode='d') -> 'Block':

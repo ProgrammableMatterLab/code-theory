@@ -54,6 +54,18 @@ Make sure to replace your-username with your actual GitHub username and adjust t
 - Ensure you have Git installed if you choose to clone the repository.
 - If you encounter issues with dependencies, consider using a virtual environment to manage them more effectively.
 
+# Testing
+
+to run all tests, run
+```bash
+python3 -m unittest discover -s block/tests -p 'test_*.py'
+```
+
+to run individual test, run
+```bash
+python3 -m unittest discover -s block/tests -p 'test_{test name here}.py'
+```
+
 # API Reference
 
 ## Block Class
@@ -112,7 +124,7 @@ Visualizes one or more Blocks, displaying their points as circles with polaritie
 
 ## Usage Example
 
-blah blah blah
+check out examples/
 
 ## Testing
     $ python -m unittest discover -s block/tests
