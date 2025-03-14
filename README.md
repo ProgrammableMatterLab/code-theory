@@ -1,5 +1,5 @@
 
-block is a library designed to study and visualize configurations of magnets and their interactions under rotation and translation. When two configurations of magnets are fully attracted to each other, they have a normalize attractive force of -1. Similarly, when two configurations are fully repulsive to each other, they have a normalized attractive force of 1.
+block is a library designed to study and visualize configurations of magnets and their interactions under rotation and translation. When two configurations of magnets are fully attracted to each other, they have a normalized attractive force of -1. Similarly, when two configurations are fully repulsive to each other, they have a normalized attractive force of 1.
 
 # Key Components
 
