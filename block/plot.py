@@ -64,7 +64,7 @@ def plot_rotation_attraction(block1: Block, block2: Block, num_angles: int = 160
   ax.set_ylabel('Attractive Force')
   plt.show()
 
-def plot_translation_attraction(block1: Block, block2: Block, num_x: int = 20, num_y: int = 20) -> None:
+def plot_translation_attraction(block1: Block, block2: Block, num_x: int = 20, num_y: int = 20, lo: int = -2, hi: int = 2) -> None:
     """
     Plot attraction vs translation of blocks.
 
@@ -74,7 +74,7 @@ def plot_translation_attraction(block1: Block, block2: Block, num_x: int = 20, n
     num_x (int): Number of x positions to evaluate (default 20).
     num_y (int): Number of y positions to evaluate (default 20).
     """
-    X, Y, result = attraction_per_translation(block1, block2, num_x, num_y)
+    X, Y, result = attraction_per_translation(block1, block2, num_x, num_y, lo, hi)
     # Plot
     plt.figure(figsize=(8, 8))
     plt.scatter(X, Y, c=result.ravel(), cmap='RdBu')

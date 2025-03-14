@@ -34,7 +34,7 @@ def attraction_per_angle(block1: Block, block2: Block, num_angles: int = 160) ->
   return angles, result_tensor
 
 
-def attraction_per_translation(block1: Block, block2: Block, num_x: int, num_y: int) -> Tuple[list, torch.tensor]:
+def attraction_per_translation(block1: Block, block2: Block, num_x: int, num_y: int, lo: int, hi: int) -> Tuple[list, torch.tensor]:
   """
   returns array of (angle, attrative force)
 
@@ -46,8 +46,8 @@ def attraction_per_translation(block1: Block, block2: Block, num_x: int, num_y: 
   Returns:
   Tuple[list, torch.Tensor]: list of angles and tensor of values
   """
-  X = torch.linspace(-2, 2, num_x)
-  Y = torch.linspace(-2, 2, num_y)
+  X = torch.linspace(lo, hi, num_x)
+  Y = torch.linspace(lo, hi, num_y)
   results = []
   pointsX = []
   pointsY = []

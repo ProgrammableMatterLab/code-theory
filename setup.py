@@ -15,10 +15,13 @@ setuptools.setup(
     url="https://github.com/ProgrammableMatterLab/code-theory",
     packages=setuptools.find_packages(),
     include_package_data=True,
+    license="MIT",  # Explicitly specify the license
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",  # Replace with your license
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.8',
+    # Add dependencies if needed
+    # install_requires=['dependency1', 'dependency2'],
 )
