@@ -1,11 +1,13 @@
 
-block is a library designed to study and visualize encodings and their interactions under rotation and translation.
+block is a library designed to study and visualize configurations of magnets and their interactions under rotation and translation. When two configurations of magnets are fully attracted to each other, they have a normalize attractive force of -1. Similarly, when two configurations are fully repulsive to each other, they have a normalized attractive force of 1.
 
 # Key Components
 
-1. **Block Class**: Encapsulates tensor data with polarity information for calculating attraction between blocks.
-2. **Plotting Functions**: Include `plot_faces` for visualizing tensor faces with polarities.
-3. **Utility Functions**: Convert tensors to points using `tensor_to_points`.
+1. **Block**: Encapsulates tensor data with polarity information for calculating attraction between blocks.
+2. **Plotting Functions**: useful for visualizing interactions between blocks
+3. **Generators**: easily create random or ordered blocks
+4. **Math Functions**: useful math functions for operating on points
+5. **Solver**: coming soon... (:
 
 # Installation
 To install the block library, follow these steps:
