@@ -3,8 +3,8 @@ import numpy as np
 from typing import List
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Polygon, Rectangle
-from .block import Block, rotate, calculate_attraction
-from scipy.linalg import hadamard
+from .utils import attraction_per_angle, attraction_per_translation
+from .block import Block
 
 def plot_faces(blocks: list, zoom_factor: float = 2, alpha: float = 0.3):
   
@@ -44,21 +44,10 @@ def plot_rotation_attraction(block1: Block, block2: Block, num_angles: int = 160
   num_angles (int): Number of angles to evaluate (default 160)
   """
 
-  angles = torch.linspace(-180, 180, num_angles)
-  results = []
-  for angle in angles:
-    rotated = rotate(block2, angle)
-    _, res = calculate_attraction(block1, rotated)
-    results.append(res.item())
+  angles, results = attraction_per_angle(block1, block2, num_angles)
 
-        # Convert angles and results to numpy arrays
-  angles_np = angles.numpy()
-  results_np = np.array(results)
-  results_np = results_np / np.max(np.absolute(results_np))
-
-        # # Create the bar plot
   fig, ax = plt.subplots(figsize=(12, 6))
-  bars = ax.bar(angles_np, results_np, width=360/num_angles)
+  bars = ax.bar(angles, results, width=360/num_angles)
 
         # Color the bars based on the normalized results
   sm = plt.cm.ScalarMappable(cmap='viridis', norm=plt.Normalize(vmin=-1, vmax=1))
@@ -75,6 +64,25 @@ def plot_rotation_attraction(block1: Block, block2: Block, num_angles: int = 160
   ax.set_ylabel('Attractive Force')
   plt.show()
 
+def plot_translation_attraction(block1: Block, block2: Block, num_x: int = 20, num_y: int = 20) -> None:
+    """
+    Plot attraction vs translation of blocks.
+
+    Args:
+    block1 (Block): First block.
+    block2 (Block): Second block.
+    num_x (int): Number of x positions to evaluate (default 20).
+    num_y (int): Number of y positions to evaluate (default 20).
+    """
+    X, Y, result = attraction_per_translation(block1, block2, num_x, num_y)
+    # Plot
+    plt.figure(figsize=(8, 8))
+    plt.scatter(X, Y, c=result.ravel(), cmap='RdBu')
+    plt.colorbar(label='Attraction')
+    plt.xlabel('X Translation')
+    plt.ylabel('Y Translation')
+    plt.title('Attraction vs Translation')
+    plt.show()
 
 
 # def plot_attraction_vs_rotation_for_multiple_N(N_values, num_angles=260):

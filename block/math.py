@@ -66,9 +66,9 @@ def rotate_points(points: torch.Tensor, theta, mode='d') -> torch.Tensor:
   if mode == 'd':
     theta = math.pi * theta / 180
   rot_mat = torch.tensor([[math.cos(theta), -1 * math.sin(theta)], [math.sin(theta), math.cos(theta)]])
-  return transform(points, rot_mat)
+  return transform_points(points, rot_mat)
 
-def transform(points: torch.Tensor, A: torch.Tensor) -> torch.Tensor:
+def transform_points(points: torch.Tensor, A: torch.Tensor) -> torch.Tensor:
   '''
   applies a linear transformation to points
   Args:
@@ -79,7 +79,7 @@ def transform(points: torch.Tensor, A: torch.Tensor) -> torch.Tensor:
   '''
   return points @ A
 
-def translate(points: torch.Tensor, A: torch.Tensor) -> torch.Tensor:
+def translate_points(points: torch.Tensor, A: torch.Tensor) -> torch.Tensor:
   '''
   translates points
   Args:

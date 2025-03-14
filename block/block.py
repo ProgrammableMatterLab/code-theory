@@ -1,5 +1,5 @@
 import torch
-from .math import intersection_area, rotate_points, transform, translate
+from .math import intersection_area, rotate_points, transform_points, translate_points
 from typing import Tuple, Optional, List
 
 class Block:
@@ -35,10 +35,10 @@ class Block:
         self.points = rotate_points(self.points, theta, mode)
     
     def transform(self, A: torch.Tensor) -> None:
-        self.points = transform(self.points, A)
+        self.points = transform_points(self.points, A)
     
     def translate(self, A: torch.Tensor) -> None:
-        self.points = translate(self.points, A)
+        self.points = translate_points(self.points, A)
     
     def __str__(self):
         return '{' + f'points:\n {self.points},\n polarities:\n {self.polarities},\n radii:\n {self.radii},\n numel: {self.numel}' + '}'
@@ -46,6 +46,12 @@ class Block:
 
 def rotate(block: 'Block', theta, mode='d') -> 'Block':
   points = rotate_points(block.points, theta, mode)
+  new_block = block.clone()
+  new_block.points = points
+  return new_block
+
+def translate(block: 'Block', A: torch.Tensor) -> 'Block':
+  points = translate_points(block.points, A)
   new_block = block.clone()
   new_block.points = points
   return new_block
