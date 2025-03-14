@@ -98,6 +98,9 @@ def is_overlapping(points: torch.Tensor, radii: torch.Tensor) -> bool:
     radii (torch.Tensor): radius for each circle centered at p in points
   Returns:
     bool: true if no circles overlap, otherwise false
+
+
+  should have distance of 0 between
   '''
-  area = intersection_area(points, points, radii, radii)
+  dists = _pnorm_distances(points, points, power=2)
   return True if torch.sum(area) < math.pi * torch.sum(radii**2) else False
