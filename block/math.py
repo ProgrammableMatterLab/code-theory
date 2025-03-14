@@ -72,10 +72,10 @@ def transform_points(points: torch.Tensor, A: torch.Tensor) -> torch.Tensor:
   '''
   applies a linear transformation to points
   Args:
-  points (torch.Tensor): points (N,2)
-  A (torch.Tensor): transformation matrix (2, 2)
+    points (torch.Tensor): points (N,2)
+    A (torch.Tensor): transformation matrix (2, 2)
   Returns:
-  torch.Tensor: transformed points
+    torch.Tensor: transformed points
   '''
   return points @ A
 
@@ -83,10 +83,10 @@ def translate_points(points: torch.Tensor, A: torch.Tensor) -> torch.Tensor:
   '''
   translates points
   Args:
-  points (torch.Tensor): points (N,2)
-  A (torch.Tensor): translation matrix (2,)
+    points (torch.Tensor): points (N,2)
+    A (torch.Tensor): translation matrix (2,)
   Returns:
-  torch.Tensor: translated points
+    torch.Tensor: translated points
   '''
   return points + A
 

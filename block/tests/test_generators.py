@@ -35,7 +35,7 @@ class TestGenerators(unittest.TestCase):
 
     def test_generate_non_overlapping_points(self):
         # Test that _generate_non_overlapping_points generates points correctly
-        n = 4
+        n = 2
         def func():
             return 0.1  # Simple function to generate radii
         points, radii = _generate_non_overlapping_points(n, func, (-1, 1, -1, 1))

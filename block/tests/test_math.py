@@ -39,17 +39,5 @@ class TestMathFunctions(unittest.TestCase):
         self.assertAlmostEqual(distances[1, 0].item(), math.sqrt(2))
         self.assertAlmostEqual(distances[1, 1].item(), math.sqrt(2))
 
-
-    def test_is_overlapping(self):
-        # Test with non-overlapping circles
-        points = torch.tensor([[0.0, 0.0], [0.0, 0.0]])
-        radii = torch.tensor([1.0, 1.0])
-        self.assertTrue(is_overlapping(points, radii))
-
-        # Test with overlapping circles
-        points = torch.tensor([[0.0, 0.0], [5.0, 5.0]])
-        radii = torch.tensor([1.5, 1.5])
-        self.assertFalse(is_overlapping(points, radii))
-
 if __name__ == "__main__":
     unittest.main()

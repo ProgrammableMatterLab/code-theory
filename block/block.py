@@ -20,24 +20,45 @@ class Block:
         self.numel = len(self.points)
 
     def mate(self) -> 'Block':
+        '''
+        returns block object with all polarities inverted
+        '''
         return Block(self.points.clone(), -1 * self.polarities.clone(), self.radii.clone())
 
     def clone(self) -> 'Block':
+        '''
+        preforms a deep copy of a block object
+        '''
         return Block(self.points.clone(), self.polarities.clone(), self.radii.clone())
 
     def calculate_attraction(self, other: 'Block') -> Tuple[torch.Tensor, float]:
+        '''
+        class method, look at calculate attraction
+        '''
         return calculate_attraction(self, other)
 
     def as_tuple(self) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        '''
+        displays points, polarities, and radii of a block object as a tuple
+        '''
         return (self.points, self.polarities, self.radii)
 
     def rotate(self, theta, mode='d') -> None:
+        '''
+        rotates a block's point by theta (default is in degrees, but change mode to 'r' for radians)
+        '''
         self.points = rotate_points(self.points, theta, mode)
     
     def transform(self, A: torch.Tensor) -> None:
+        '''
+        applies transformation A on block object points
+        '''
         self.points = transform_points(self.points, A)
     
     def translate(self, A: torch.Tensor) -> None:
+        '''
+        translates a block object by A
+        '''
         self.points = translate_points(self.points, A)
     
     def __str__(self):
