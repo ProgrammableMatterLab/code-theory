@@ -68,59 +68,101 @@ python3 -m unittest discover -s block/tests -p 'test_{test name here}.py'
 
 # API Reference
 
-## Block Class
+## Block
+The block.py module defines the Block class, which represents a set of points with polarities and radii. It provides methods for manipulating and analyzing these blocks.
 
-The `Block` class is the core component of the library, representing a block structure with associated tensor data and polarities.
-
-#### Constructor
-
-```python
-Block(tensor: torch.Tensor)
-```
-
-Initializes a Block object with a 2D tensor representing the block's structure.
-
+### Block Class
 #### Class Methods
-
-```python
-@classmethod
-from_block(cls, other: Block) -> Block
+```py
+__init__(points: torch.Tensor, polarities: torch.Tensor, radii: torch.Tensor):
 ```
+Initializes a Block object with the given points, polarities, and radii.
 
-Creates a new Block instance by cloning another Block.
-
-#### Static Methods
-
-```python
-@staticmethod
-calculate_attraction(block1: Block, block2: Block) -> Tuple[torch.Tensor, float]
+```py
+mate() -> Block:
 ```
+Returns a new Block that is the "mate" of the current block, with opposite polarities.
 
-Calculates the attraction between two blocks, returning a tensor of attraction forces and the sum of forces normalized by the number of elements in block1.
-
-#### Instance Methods
-
-```python
-rotated(self, theta: float, mode: str = 'd') -> Block
+```py
+clone() -> Block:
 ```
+Creates a copy of the current block.
 
-Returns a new Block with points rotated by the given angle theta.
-
-```python
-rotate(self, theta: float, mode: str = 'd') -> None
+```py
+calculate_attraction(other: Block) -> Tuple[torch.Tensor, float]:
 ```
+Calculates the attraction between the current block and another block.
 
-Rotates the points of the current Block by the given angle theta in-place.
-
-## Plotting Functions
-
-```python
-plot_faces(blocks: Union[Block, List[Block]], colors: List[str], zoom_factor: float = 2, alpha: float = 0.5) -> None
+```py
+as_tuple() -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
 ```
+Returns the points, polarities, and radii of the block as a tuple.
 
-Visualizes one or more Blocks, displaying their points as circles with polarities indicated by 'N' or 'S' markers.
+```py
+rotate(theta, mode='d') -> None:
+```
+Rotates the block by the specified angle.
 
-![Visualizing Blocks](images/plot_faces.png)
+```py
+transform(A: torch.Tensor) -> None:
+```
+Applies a linear transformation to the block's points.
+
+```py
+translate(A: torch.Tensor) -> None:
+```
+Translates the block's points by the specified vector.
+
+#### Methods
+```py
+rotate(block: Block, theta, mode='d') -> Block:
+```
+Returns a new block that is the result of rotating the given block.
+
+```py
+translate(block: Block, A: torch.Tensor) -> Block:
+```
+Returns a new block that is the result of translating the given block.
+
+```py
+calculate_attraction(block1: Block, block2: Block) -> Tuple[torch.Tensor, float]:
+```
+Calculates the attraction between two blocks.
+
+## Generators Module
+The generators.py module provides functions for generating blocks based on different criteria.
+
+### Methods
+```py
+gen_had_block(n: int) -> Block:
+```
+Generates a block based on an n x n Hadamard matrix.
+
+```py
+gen_rand_block(n: int, func: Callable[[], float], bounds: Tuple[float, float, float, float] = (-1, 1, -1, 1), polarities: Optional[torch.Tensor] = None) -> Block:
+```
+Generates a block with random points and radii within the specified bounds.
+
+## Plot
+
+The plot module provides functions for visualizing blocks and their interactions.
+
+### Functions
+
+```py
+plot_faces(blocks: list, zoom_factor: float = 2, alpha: float = 0.3):
+```
+Plots a list of blocks. Each block is represented by circles with colors indicating polarity.
+
+```py
+plot_rotation_attraction(block1: Block, block2: Block, num_angles: int = 160)
+```
+Plots the attraction between two blocks as a function of rotation.
+
+```py
+plot_translation_attraction(block1: Block, block2: Block, num_x: int = 20, num_y: int = 20, lo: int = -2, hi: int = 2)
+```
+Plots the attraction between two blocks as a function of translation.
 
 ## Usage Example
 
