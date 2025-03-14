@@ -149,24 +149,27 @@ The plot module provides functions for visualizing blocks and their interactions
 
 ### Functions
 
-![plot faces](./static/images/plot-faces.png)
 ```py
 plot_faces(blocks: list, zoom_factor: float = 2, alpha: float = 0.3):
 ```
 Plots a list of blocks. Each block is represented by circles with colors indicating polarity.
 
+![plot faces](./static/images/plot-faces.png)
 
-![plot rotation](./static/images/plot-rotation.png)
 ```py
 plot_rotation_attraction(block1: Block, block2: Block, num_angles: int = 160)
 ```
 Plots the attraction between two blocks as a function of rotation.
 
-![plot rotation](./static/images/plot-translation.png)
+![plot rotation](./static/images/plot-rotation.png)
+
+
 ```py
 plot_translation_attraction(block1: Block, block2: Block, num_x: int = 20, num_y: int = 20, lo: int = -2, hi: int = 2)
 ```
 Plots the attraction between two blocks as a function of translation.
+
+![plot rotation](./static/images/plot-translation.png)
 
 ## Usage Example
 
