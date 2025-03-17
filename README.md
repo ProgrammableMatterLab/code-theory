@@ -183,6 +183,7 @@ check out examples/
 - [ ] Animation of the rotating surfaces alongside a graph
 - [ ] Earnshaw's theorem
 - [ ] non-linear programming for designing N/S placement to shape a potential well
+- [ ] triplet nmr (or any nmr theres a lot of nmrs, nmrs pattern/peaks, nmr is short for nuclear magnetic something 0:)
 
 ## References
 
