@@ -3,8 +3,8 @@ import numpy as np
 from typing import List
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Polygon, Rectangle
-from .utils import attraction_per_angle, attraction_per_translation
-from .block import Block
+from ..utils import attraction_per_angle, attraction_per_translation
+from ..block import Block
 
 def plot_faces(blocks: list, zoom_factor: float = 2, alpha: float = 0.3):
   

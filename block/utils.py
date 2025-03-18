@@ -63,4 +63,6 @@ def attraction_per_translation(block1: Block, block2: Block, num_x: int, num_y: 
   result_tensor /= torch.max(torch.abs(result_tensor))
   return pointsX, pointsY, result_tensor
 
-  
+
+def generate_x_y_theta(bounds) -> torch.Tensor:
+  pass
